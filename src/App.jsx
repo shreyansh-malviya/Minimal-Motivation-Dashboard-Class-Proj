@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "./App.css";
 
 // Components
 import QuoteCard from "./components/QuoteCard";
@@ -113,9 +112,10 @@ function App() {
     : false;
 
   return (
-    <div className="app">
-      <h1 className="title">Daily Motivation</h1>
-      <p className="subtitle">A fresh quote to brighten your day ☀️</p>
+    // Page wrapper — centered, max width, padded
+    <div className="max-w-xl mx-auto mt-16 px-5 font-sans text-gray-900 text-center">
+      <h1 className="text-3xl font-bold mb-1">Daily Motivation</h1>
+      <p className="text-gray-500 text-sm mb-8">A fresh quote to brighten your day ☀️</p>
 
       {/* Card: shows the quote or loading state */}
       <QuoteCard quote={quote} loading={loading} />
@@ -130,8 +130,8 @@ function App() {
       />
 
       {/* Liked count */}
-      <p className="liked-count">
-        Total liked: <strong>{likedQuotes.length}</strong>
+      <p className="mt-5 text-sm text-gray-500">
+        Total liked: <strong className="text-gray-800">{likedQuotes.length}</strong>
       </p>
 
       {/* List of all liked quotes with unlike buttons */}

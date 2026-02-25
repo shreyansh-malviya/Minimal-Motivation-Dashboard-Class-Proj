@@ -4,20 +4,21 @@
 
 function QuoteCard({ quote, loading }) {
     return (
-        <div className="card">
+        // Card container — bordered box with light background
+        <div className="border border-gray-200 rounded-xl p-8 bg-gray-50 min-h-[120px] flex flex-col justify-center text-left">
             {loading ? (
-                // While fetching, show a loading placeholder
-                <p className="loading-text">Loading quote...</p>
+                // While fetching, show a centered loading placeholder
+                <p className="text-gray-400 text-sm text-center">Loading quote...</p>
             ) : quote ? (
                 <>
                     {/* The quote body */}
-                    <p className="quote-text">"{quote.content}"</p>
+                    <p className="text-gray-800 text-lg leading-relaxed mb-3">"{quote.content}"</p>
                     {/* The author */}
-                    <p className="quote-author">— {quote.author}</p>
+                    <p className="text-gray-500 text-sm italic">— {quote.author}</p>
                 </>
             ) : (
                 // Shown before the very first quote loads
-                <p className="loading-text">Click "New Quote" to start.</p>
+                <p className="text-gray-400 text-sm text-center">Click "New Quote" to start.</p>
             )}
         </div>
     );
