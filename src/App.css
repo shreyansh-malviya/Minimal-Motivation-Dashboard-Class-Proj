@@ -1,0 +1,155 @@
+/* ── Overall page wrapper ── */
+.app {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 0 20px;
+  font-family: "Segoe UI", sans-serif;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+/* ── Headings ── */
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+/* ── Quote card ── */
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 32px 28px;
+  background: #fafafa;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.quote-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  color: #222;
+}
+
+.quote-author {
+  font-size: 0.95rem;
+  color: #555;
+  font-style: italic;
+}
+
+.loading-text {
+  color: #999;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* ── Buttons row ── */
+.buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Base button style */
+.btn {
+  padding: 10px 22px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: background 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+/* Disabled state */
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Like button when active */
+.like-btn.liked {
+  border-color: #e05555;
+  color: #e05555;
+  background: #fff5f5;
+}
+
+/* ── Liked count ── */
+.liked-count {
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* ── Liked quotes list ── */
+.liked-list {
+  margin-top: 32px;
+  text-align: left;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 24px;
+}
+
+.liked-list-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+}
+
+/* Each liked quote row */
+.liked-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.liked-item-text {
+  flex: 1;
+  /* take up remaining space, push button to the right */
+}
+
+.liked-quote-content {
+  font-size: 0.95rem;
+  color: #222;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.liked-quote-author {
+  font-size: 0.85rem;
+  color: #777;
+  font-style: italic;
+}
+
+/* Unlike button — sits on the right of each row */
+.unlike-btn {
+  flex-shrink: 0;
+  /* don't let it shrink when text is long */
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  color: #e05555;
+  border-color: #e05555;
+}
+
+.unlike-btn:hover:not(:disabled) {
+  background: #fff5f5;
+}
