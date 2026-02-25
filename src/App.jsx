@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
+// Components
+import QuoteCard from "./components/QuoteCard";
+import QuoteActions from "./components/QuoteActions";
+import LikedList from "./components/LikedList";
+
 const API_URL = "https://dummyjson.com/quotes/random";
 
 const FALLBACK_QUOTES = [
@@ -32,12 +37,13 @@ const FALLBACK_QUOTES = [
 ];
 
 function App() {
-  // Holds the current quote object (text + author)
+  // Current quote shown in the card
   const [quote, setQuote] = useState(null);
 
-  // true while we are waiting for the API response
+  // true while waiting for the API response
   const [loading, setLoading] = useState(false);
 
+  // Full quote objects the user has liked
   const [likedQuotes, setLikedQuotes] = useState([]);
 
   function getRandomFallback() {
@@ -45,69 +51,63 @@ function App() {
     return FALLBACK_QUOTES[randomIndex];
   }
 
-  // Fetch a new quote from the API; fall back to local quotes if API fails
+  // Fetch a quote from the API; use local fallback if API fails
   async function fetchQuote() {
-    setLoading(true); // show loading state
+    setLoading(true);
 
     try {
       const response = await fetch(API_URL);
 
-      // Check if the HTTP response was successful
       if (!response.ok) throw new Error("API request failed");
 
       const data = await response.json();
 
-      // dummyjson returns { id, quote, author } — normalize to { _id, content, author }
+      // dummyjson returns { id, quote, author } — normalize field names
       if (data && data.quote) {
         setQuote({
-          _id: String(data.id),  // use id as _id
-          content: data.quote,   // rename quote → content
+          _id: String(data.id),
+          content: data.quote,
           author: data.author,
         });
       } else {
         throw new Error("Invalid API response");
       }
     } catch (error) {
-      // API failed (e.g. network error, service down) — use a local quote
       console.log("API failed, using fallback quote:", error.message);
       setQuote(getRandomFallback());
     } finally {
-      // Always turn off loading, whether success or failure
       setLoading(false);
     }
   }
 
-  // Fetch a quote automatically when the app first loads
+  // Fetch a quote automatically on first render
   useEffect(function () {
     fetchQuote();
-  }, []); // empty array = run once on mount
+  }, []);
 
-  // Toggle like for the currently displayed quote
+  // Add the current quote to the liked list
   function toggleLike() {
     if (!quote) return;
 
-    // Check if this quote is already in the liked list (match by _id)
     var alreadyLiked = likedQuotes.some(function (q) {
       return q._id === quote._id;
     });
 
     if (alreadyLiked) {
-      // Remove from liked list
       unlikeQuote(quote._id);
     } else {
-      // Add the full quote object so we can display it in the list
       setLikedQuotes([...likedQuotes, quote]);
     }
   }
 
-  // Remove a quote from the liked list by its ID
+  // Remove a quote from the liked list by ID
   function unlikeQuote(id) {
     setLikedQuotes(likedQuotes.filter(function (q) {
       return q._id !== id;
     }));
   }
 
-  // Check if the current quote is liked (used to show button state)
+  // Is the currently displayed quote in the liked list?
   var isCurrentLiked = quote
     ? likedQuotes.some(function (q) { return q._id === quote._id; })
     : false;
@@ -117,73 +117,25 @@ function App() {
       <h1 className="title">Daily Motivation</h1>
       <p className="subtitle">A fresh quote to brighten your day ☀️</p>
 
-      {/* Quote card — shows loading text or the actual quote */}
-      <div className="card">
-        {loading ? (
-          <p className="loading-text">Loading quote...</p>
-        ) : quote ? (
-          <>
-            {/* The quote text */}
-            <p className="quote-text">"{quote.content}"</p>
-            {/* The author */}
-            <p className="quote-author">— {quote.author}</p>
-          </>
-        ) : (
-          <p className="loading-text">Click "New Quote" to start.</p>
-        )}
-      </div>
+      {/* Card: shows the quote or loading state */}
+      <QuoteCard quote={quote} loading={loading} />
 
-      {/* Action buttons */}
-      <div className="buttons">
-        {/* New Quote button — disabled while fetching */}
-        <button
-          className="btn"
-          onClick={fetchQuote}
-          disabled={loading}
-        >
-          {loading ? "Fetching..." : "New Quote"}
-        </button>
+      {/* Buttons: New Quote + Like */}
+      <QuoteActions
+        onNewQuote={fetchQuote}
+        onToggleLike={toggleLike}
+        loading={loading}
+        isLiked={isCurrentLiked}
+        hasQuote={!!quote}
+      />
 
-        {/* Like button — disabled while loading or no quote available */}
-        <button
-          className={"btn like-btn" + (isCurrentLiked ? " liked" : "")}
-          onClick={toggleLike}
-          disabled={loading || !quote}
-        >
-          {isCurrentLiked ? "❤️ Liked" : "🤍 Like"}
-        </button>
-      </div>
-
-      {/* Show total liked count */}
+      {/* Liked count */}
       <p className="liked-count">
         Total liked: <strong>{likedQuotes.length}</strong>
       </p>
 
-      {/* Liked quotes list — only shown when at least one quote is liked */}
-      {likedQuotes.length > 0 && (
-        <div className="liked-list">
-          <h2 className="liked-list-title">Liked Quotes</h2>
-
-          {/* Loop over each liked quote and show it with an unlike button */}
-          {likedQuotes.map(function (likedQuote) {
-            return (
-              <div key={likedQuote._id} className="liked-item">
-                <div className="liked-item-text">
-                  <p className="liked-quote-content">"{likedQuote.content}"</p>
-                  <p className="liked-quote-author">— {likedQuote.author}</p>
-                </div>
-                {/* Unlike button — removes this quote from the list */}
-                <button
-                  className="btn unlike-btn"
-                  onClick={function () { unlikeQuote(likedQuote._id); }}
-                >
-                  Unlike
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {/* List of all liked quotes with unlike buttons */}
+      <LikedList likedQuotes={likedQuotes} onUnlike={unlikeQuote} />
     </div>
   );
 }
